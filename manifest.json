@@ -1,0 +1,32 @@
+{
+    "manifest_version": 2,
+    
+    "name": "Bugs Checklist",
+    "description": "Allows bugs from GitHub to be viewed in Chrome.",
+    "version": "1.0",
+    
+    "browser_action": {
+        "default_icon": {                    // optional
+        "19": "icon-19.png",           // optional
+        "38": "icon-38.png"            // optional
+        }
+    },
+    
+    "background": {
+        "pages": ["background.html"],
+        "scripts": ["jquery.min.js", "background.js"]
+    },
+    
+    "permissions": [
+                    "http://*.github.com/",
+                    "https://*.github.com/",
+                    "http://*.ebsters.co.uk/",
+                    "notifications",
+                    "background",
+                    "tabs"
+                    ],
+    
+    "web_accessible_resources" : [
+        "icon.png"
+    ]
+}
