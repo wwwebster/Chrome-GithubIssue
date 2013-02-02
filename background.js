@@ -2,7 +2,7 @@
 var numberOfIssuesLastTime;
 var lastNotificationURL;
 var ignoreLoginUntilClick = true;
-var tabID;
+var openedTab;
 
 var githubRequestPage = "https://github.com/login/oauth/authorize?client_id=be805dc8d38328a7a5f1&redirect_uri=http://ebsters.co.uk/github/loginCallback.php&scope=repo,user,notifications"
 
@@ -10,7 +10,6 @@ var githubRequestPage = "https://github.com/login/oauth/authorize?client_id=be80
 function parseResponse(data)
 {
     //Close the login tab if open
-    if (typeof tabID !== 'undefined') chrome.tabs.remove(tabID);
     
     if (data.response == "avBugs")    //Check that this is the right response.
     {
@@ -55,17 +54,36 @@ function updateBadge()
     setTimeout(updateBadge, 10000);
 }
 
+function checkTabs(tab)
+{
+    if (tab.url == "http://ebsters.co.uk/github/bugs.php")
+    {
+        chrome.tabs.remove(tab.id)
+    }
+    else
+    {
+        setTimeout(scheduleTabCheck, 300);
+    }
+}
+
+function scheduleTabCheck()
+{
+    chrome.tabs.get(openedTab.id, checkTabs);
+}
+
+
+function didLoadTab(tab)
+{
+    openedTab = tab;
+    updateBadge();
+    scheduleTabCheck();
+}
 
 function handleBrowserActionClick()
 {
     if (ignoreLoginUntilClick)
     {
-        chrome.tabs.create({'url': githubRequestPage},
-                           function(tab)
-                           {
-                           tabID = tab.id;
-                           updateBadge();
-                           });
+        chrome.tabs.create({'url': githubRequestPage}, didLoadTab);
         return;
     }
     
@@ -74,7 +92,6 @@ function handleBrowserActionClick()
     else
         chrome.tabs.create({'url': 'http://www.github.com'});
 }
-
 
 
 //Start the listeners
