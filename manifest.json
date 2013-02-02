@@ -1,16 +1,21 @@
 {
     "manifest_version": 2,
     
-    "name": "Bugs Checklist",
-    "description": "Allows bugs from GitHub to be viewed in Chrome.",
+    "name": "Github Issues Notifier",
+    "description": "Presents a notification when you receive a new issue and notifies about number of current issues.",
     "version": "1.0",
     
     "browser_action": {
-        "default_icon": {                    // optional
-        "19": "icon-19.png",           // optional
-        "38": "icon-38.png"            // optional
+        "default_icon": {
+        "19": "icon-19.png",
+        "38": "icon-38.png"
         }
     },
+    
+    "icons": {
+        "16": "icon-16.png",
+        "48": "icon-48.png",
+        "128": "icon-128.png" },
     
     "background": {
         "pages": ["background.html"],
