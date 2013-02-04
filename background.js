@@ -14,25 +14,33 @@ function parseResponse(data)
     if (data.response == "avBugs")    //Check that this is the right response.
     {
         var numberOfIssues = data.bugCount;
-        chrome.browserAction.setBadgeText({text: ""+numberOfIssues});
         
-        if (numberOfIssues > numberOfIssuesLastTime)
+        if (numberOfIssues > 0)
         {
-            var bugs = data.bugs;
-            
-            //Just show the most recent bug as a notification even if there was more than one
-            var bug = bugs[0];
-            var notification = webkitNotifications.createNotification("icon.png", bug.title, bug.body);
-            notification.onclick = function(){chrome.tabs.create({'url': bug.url});};
-            notification.show();
-            
-            timeOnLastNotification = bug.time;
-            lastNotificationURL = bug.url;
+            chrome.browserAction.setBadgeText({text: ""+numberOfIssues});
+            if (numberOfIssues > numberOfIssuesLastTime)
+            {
+                var bugs = data.bugs;
+                
+                //Just show the most recent bug as a notification even if there was more than one
+                var bug = bugs[0];
+                var notification = webkitNotifications.createNotification("icon.png", bug.title, bug.body);
+                notification.onclick = function(){chrome.tabs.create({'url': bug.url});};
+                notification.show();
+                
+                timeOnLastNotification = bug.time;
+                lastNotificationURL = bug.url;
+            }
+            else if (numberOfIssues > 0)
+            {
+                //Store the most recent URL so that when browser action is clicked, it goes to that bug
+                lastNotificationURL = data.bugs[0].url;
+            }
         }
-        else if (numberOfIssues > 0)
+        else
         {
-            //Store the most recent URL so that when browser action is clicked, it goes to that bug
-            lastNotificationURL = data.bugs[0].url;
+            chrome.browserAction.setBadgeText({text: ""});
+            lastNotificationURL = null;
         }
         numberOfIssuesLastTime = numberOfIssues;
         ignoreLoginUntilClick = false;
